@@ -15,7 +15,6 @@ let quotes = [
 // Step 2: Select DOM elements
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
-const addQuoteBtn = document.getElementById("addQuoteBtn");
 
 // Step 3: Show a random quote
 function showRandomQuote() {
@@ -28,7 +27,32 @@ function showRandomQuote() {
   quoteDisplay.innerHTML = `"${quote.text}" - <em>${quote.category}</em>`;
 }
 
-// Step 4: Add a new quote dynamically
+// Step 4: Dynamically create the Add Quote form
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
+
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  formContainer.appendChild(quoteInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+
+  document.body.appendChild(formContainer);
+}
+
+// Step 5: Add a new quote dynamically
 function addQuote() {
   const quoteText = document.getElementById("newQuoteText").value.trim();
   const quoteCategory = document.getElementById("newQuoteCategory").value.trim();
@@ -36,19 +60,16 @@ function addQuote() {
   if (quoteText === "" || quoteCategory === "") {
     alert("Please fill in both fields.");
     return;
-    }
-    
-  // Add to the quotes array
+  }
+
   quotes.push({ text: quoteText, category: quoteCategory });
 
-  // Clear inputs
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
-  // Confirm addition
   quoteDisplay.innerHTML = `New quote added: "${quoteText}" - <em>${quoteCategory}</em>`;
 }
 
-// Step 5: Event listeners
+// Step 6: Event listeners and initialize form
 newQuoteBtn.addEventListener("click", showRandomQuote);
-addQuoteBtn.addEventListener("click", addQuote);
+createAddQuoteForm();
