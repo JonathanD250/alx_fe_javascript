@@ -20,12 +20,12 @@ const addQuoteBtn = document.getElementById("addQuoteBtn");
 // Step 3: Show a random quote
 function showRandomQuote() {
   if (quotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available.";
+    quoteDisplay.innerHTML = "No quotes available.";
     return;
   }
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
-  quoteDisplay.textContent = `"${quote.text}" - ${quote.category}`;
+  quoteDisplay.innerHTML = `"${quote.text}" - <em>${quote.category}</em>`;
 }
 
 // Step 4: Add a new quote dynamically
@@ -36,8 +36,8 @@ function addQuote() {
   if (quoteText === "" || quoteCategory === "") {
     alert("Please fill in both fields.");
     return;
-  }
-
+    }
+    
   // Add to the quotes array
   quotes.push({ text: quoteText, category: quoteCategory });
 
@@ -46,7 +46,7 @@ function addQuote() {
   document.getElementById("newQuoteCategory").value = "";
 
   // Confirm addition
-  alert("Quote added successfully!");
+  quoteDisplay.innerHTML = `New quote added: "${quoteText}" - <em>${quoteCategory}</em>`;
 }
 
 // Step 5: Event listeners
