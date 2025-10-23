@@ -158,3 +158,87 @@ window.addEventListener("load", () => {
 });
 
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+
+// Step 11: Simulate server syncing using JSONPlaceholder
+
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
+
+// Simulate fetching updated quotes from server
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(SERVER_URL);
+    const serverData = await response.json();
+
+    // Simulate extracting quotes (limit to 5 fake posts)
+    const serverQuotes = serverData.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
+
+    handleServerSync(serverQuotes);
+  } catch (error) {
+    console.error("Error fetching data from server:", error);
+  }
+}
+
+// Simulate sending local quotes to server
+async function sendQuotesToServer() {
+  try {
+    await fetch(SERVER_URL, {
+      method: "POST",
+      body: JSON.stringify(quotes),
+      headers: { "Content-Type": "application/json" }
+    });
+    console.log("Quotes synced with server.");
+  } catch (error) {
+    console.error("Error sending data to server:", error);
+  }
+}
+
+// Step 12: Merge server data with local data
+function handleServerSync(serverQuotes) {
+  let conflictFound = false;
+
+  serverQuotes.forEach(serverQuote => {
+    const exists = quotes.some(q => q.text === serverQuote.text);
+    if (!exists) {
+      quotes.push(serverQuote);
+      conflictFound = true;
+    }
+  });
+
+  if (conflictFound) {
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    showNotification("New quotes synced from server.");
+  }
+}
+
+// Step 13: Show notification for sync updates
+function showNotification(message) {
+  const notification = document.createElement("div");
+  notification.textContent = message;
+  notification.style.position = "fixed";
+  notification.style.bottom = "10px";
+  notification.style.right = "10px";
+  notification.style.backgroundColor = "#333";
+  notification.style.color = "#fff";
+  notification.style.padding = "10px 15px";
+  notification.style.borderRadius = "8px";
+  notification.style.zIndex = "1000";
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+}
+
+// Periodic sync every 30 seconds
+setInterval(() => {
+  fetchQuotesFromServer();
+  sendQuotesToServer();
+}, 30000);
+
+function manualSync() {
+  fetchQuotesFromServer();
+  sendQuotesToServer();
+  showNotification("Manual sync complete.");
+}
